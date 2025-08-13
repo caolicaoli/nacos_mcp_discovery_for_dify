@@ -1,0 +1,36 @@
+version: 0.0.1
+type: plugin
+author: hbec
+name: nacos_mcp_discovery_for_dify
+label:
+  en_US: Nacos MCP Discovery for Dify
+  zh_Hans: Nacos MCP Discovery for Dify
+description:
+  en_US: "Discovery your MCP's from nacos to DifyEndpoint."
+  zh_Hans: 从Nacos发现MCP转化成DifyEndpoint.
+icon: icon.svg
+resource:
+  memory: 268435456
+  permission:
+    endpoint:
+      enabled: true
+    tool:
+      enabled: true
+    storage:
+      enabled: true
+      size: 1048576
+plugins:
+  endpoints:
+    - group/nacos_mcp_discovery_for_dify.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+created_at: 2025-08-10T00:00:00.0000000+08:00
+privacy: PRIVACY.md
+verified: false

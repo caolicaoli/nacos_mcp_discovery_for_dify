@@ -1,0 +1,75 @@
+endpoints:
+- endpoints/sse.yaml
+- endpoints/messages.yaml
+- endpoints/mcp_get.yaml
+- endpoints/mcp_post.yaml
+settings:
+- name: nacos_addr
+  type: text-input
+  required: true
+  default: "127.0.0.1:8848"
+  label:
+    en_US: Nacos Server Address
+    zh_Hans: Nacos 服务端地址
+  placeholder:
+    en_US: Please enter your Nacos MCP Registry server address
+    zh_Hans: 请输入Nacos MCP Registry 服务端地址
+- name: nacos_username
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Nacos Username
+    zh_Hans: Nacos 用户名
+  placeholder:
+    en_US: Please enter your Nacos username
+    zh_Hans: 请输入Nacos 用户名
+- name: nacos_password
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Nacos Password
+    zh_Hans: Nacos 密码
+  placeholder:
+    en_US: Please enter your Nacos password
+    zh_Hans: 请输入 Nacos 密码
+- name: nacos_namespace_id
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Nacos Namespace Id
+    zh_Hans: Nacos名字空间
+  placeholder:
+    en_US: Please enter your Nacos Namespace Id, default is public
+    zh_Hans: 请输入 Nacos名字空间,默认是public
+- name: mcp_name_pattern
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Mcp Name Pattern, default is .*
+    zh_Hans: Mcp名称的正则表达式，默认是.*
+  placeholder:
+    en_US: Please enter your Mcp Name Pattern
+    zh_Hans: 请输入Mcp名称的正则表达式
+- name: tool_name_pattern
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Tool Name Pattern, default is .*
+    zh_Hans: Tool名称的正则表达式，默认是.*
+  placeholder:
+    en_US: Please enter your Tool Name Pattern
+    zh_Hans: 请输入Tool名称的正则表达式
+- name: auth-token
+  type: secret-input
+  required: false
+  label:
+    en_US: Auth Bearer Token
+    zh_Hans: 认证Bearer token
+  placeholder:
+    en_US: the auth Bearer token of your app, if not provided, the app will not validate
+    zh_Hans: 请输入应用的认证Bearer token，如果未提供，应用将不验证
