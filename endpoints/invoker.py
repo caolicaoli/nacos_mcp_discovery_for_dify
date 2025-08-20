@@ -1,6 +1,7 @@
 import json
 import re
 import random
+import hashlib
 import uuid
 import time
 import asyncio
@@ -94,29 +95,44 @@ async def _invoke0(r: Request, values: Mapping, settings: Mapping) -> dict:
         
     return {}
 
-_cache_mcp_tools = {"data": None, "timestamp": 0}
+_cache_mcp_tools = {}
 _cache_mcp_tools_lock = asyncio.Lock()
 
 async def list_mcp_tools(settings: Mapping):
+    nacos_addr = settings.get("nacos_addr") or "127.0.0.1:8848"
+    nacos_namespace_id = settings.get("nacos_namespace_id") or "public"
+    mcp_name_pattern = settings.get("mcp_name_pattern") or ""
+    tool_name_pattern = settings.get("tool_name_pattern") or ""
+    
+    combined = f"{nacos_addr}|{nacos_namespace_id}|{mcp_name_pattern}|{tool_name_pattern}"
+    combined = hashlib.md5(combined.encode("utf-8")).hexdigest()
+    
     timeout = 60
     if "parameter" in settings and settings["parameter"]:
         parameter = json.loads(settings.get("parameter") or "{}")
         timeout = parameter.get("expire") or 60
         
-    global _cache_mcp_tools
     now = time.time()
     
-    if _cache_mcp_tools["data"] is not None and now - _cache_mcp_tools["timestamp"] < timeout:
-        return _cache_mcp_tools["data"]
+    cached = _cache_mcp_tools.get(combined)
+    if cached is not None and now - cached["timestamp"] < timeout:
+        if is_debug(settings):
+            logger.info(f"list_mcp_tools read from cache for key: {combined}")
+        return cached["data"]
 
     async with _cache_mcp_tools_lock:
+        cached = _cache_mcp_tools.get(combined)
         now = time.time()
-        if _cache_mcp_tools["data"] is not None and now - _cache_mcp_tools["timestamp"] < timeout:
-            return _cache_mcp_tools["data"]
-        
+        if cached is not None and now - cached["timestamp"] < timeout:
+            if is_debug(settings):
+                logger.info(f"list_mcp_tools read from cache for key: {combined}")
+            return cached["data"]
+
+        if is_debug(settings):
+            logger.info(f"list_mcp_tools read from remote for key: {combined}")
+            
         result = await list_mcp_tools_native(settings)
-        _cache_mcp_tools["data"] = result
-        _cache_mcp_tools["timestamp"] = time.time()
+        _cache_mcp_tools[combined] = {"data": result, "timestamp": time.time()}
         return result
 
 async def list_mcp_tools_native(settings: Mapping):
