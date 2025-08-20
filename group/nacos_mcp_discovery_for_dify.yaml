@@ -25,7 +25,7 @@ settings:
     en_US: Please enter your Nacos username
     zh_Hans: 请输入Nacos 用户名
 - name: nacos_password
-  type: text-input
+  type: secret-input
   required: false
   default: ""
   label:
@@ -73,3 +73,13 @@ settings:
   placeholder:
     en_US: the auth Bearer token of your app, if not provided, the app will not validate
     zh_Hans: 请输入应用的认证Bearer token，如果未提供，应用将不验证
+- name: parameter
+  type: text-input
+  required: false
+  default: ""
+  label:
+    en_US: Extra Parameter
+    zh_Hans: 额外参数
+  placeholder:
+    en_US: "{\"key\":\"value\"}"
+    zh_Hans: "{\"key\":\"value\"}"
