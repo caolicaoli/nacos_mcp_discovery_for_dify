@@ -7,7 +7,7 @@
 
 ### Description
 发现 Nacos 中注册的 SSE/Streamable Http 类型 MCP Server 服务，合并所有Tool并转化为 Dify 中的Endpoint。<br>
-嫌麻烦的可以直接把plugin.difypkg文件传到dify里。<br>
+<b>嫌麻烦的可以直接把plugin.difypkg文件传到dify里。</b><br>
 
 ### Step 1 在Nacos中创建McpServer
 在Nacos上创建McpServer，并添加好Tool。
