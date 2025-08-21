@@ -59,7 +59,7 @@ class MessageEndpoint(Endpoint):
                 }
             }
         elif method == "notifications/initialized":
-            response = {}
+            return Response("", status=202, content_type="application/json")
         
         if is_debug(settings):
             response_str = json.dumps(response, ensure_ascii=False, indent=2)
@@ -67,3 +67,4 @@ class MessageEndpoint(Endpoint):
             
         self.session.storage.set(session_id, json.dumps(response).encode())
         return Response("", status=202, content_type="application/json")
+
