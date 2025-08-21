@@ -76,19 +76,19 @@ async def _invoke0(r: Request, values: Mapping, settings: Mapping) -> dict:
             logger.info(f"start call_mcp_tools")
         call_result = await call_mcp_tools(mcp_server_detail_info, tool_name, arguments, settings)
         if is_debug(settings):
-            logger.info(f"end   call_mcp_tools")
-        
+            logger.info(f"end   call_mcp_tools type is {type(call_result).__name__}")
+            
         if is_debug(settings):
             logger.info(f"start content_dump_text")
-        text = " ".join(c.model_dump().get("text", "") for c in call_result.content)
+        content = [{"type": "text", "text": c.model_dump().get("text", "")} for c in call_result.content]
         if is_debug(settings):
-            logger.info(f"end   content_dump_text: {text}")
+            logger.info(f"end   content_dump_text: {json.dumps(content, ensure_ascii=False)}")
         
         return {
             "jsonrpc": "2.0",
             "id": r.json.get("id"),
             "result": {
-                "content": [{"type": "text", "text": text}],
+                "content": content,
                 "isError": False
             }
         }
