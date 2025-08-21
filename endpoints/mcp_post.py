@@ -59,10 +59,11 @@ class McpPostEndpoint(Endpoint):
                 }
             }
         elif method == "notifications/initialized":
-            response = {}
+            return Response("", status=202, content_type="application/json")
             
         if is_debug(settings):
             response_str = json.dumps(response, ensure_ascii=False, indent=2)
             logger.info(f"response is {response_str}")
             
         return Response(json.dumps(response, ensure_ascii=False, indent=2), status=200, content_type="application/json", headers=headers)
+
