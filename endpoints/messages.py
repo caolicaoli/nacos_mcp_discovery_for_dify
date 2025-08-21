@@ -58,6 +58,8 @@ class MessageEndpoint(Endpoint):
                     "serverInfo": { "name": "Nacos MCP Dify Plugin", "version": "1.0.0" }
                 }
             }
+        elif method == "notifications/initialized":
+            response = {}
         
         if is_debug(settings):
             response_str = json.dumps(response, ensure_ascii=False, indent=2)
