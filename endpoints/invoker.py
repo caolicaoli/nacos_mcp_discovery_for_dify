@@ -80,7 +80,7 @@ async def _invoke0(r: Request, values: Mapping, settings: Mapping) -> dict:
             
         if is_debug(settings):
             logger.info(f"start content_dump_text")
-        content = [{"type": "text", "text": c.model_dump().get("text", "")} for c in call_result.content]
+        content = [{"type": "text", "text": c.model_dump().get("text", "")} for c in getattr(call_result, "content", [])]
         if is_debug(settings):
             logger.info(f"end   content_dump_text: {json.dumps(content, ensure_ascii=False)}")
         
@@ -148,7 +148,7 @@ async def list_mcp_tools_native(settings: Mapping):
     total_count, page_num, page_available,mcp_servers = await mcp_service.list_mcp_servers(nacos_namespace_id,"",1,65535)
     
     filtered_servers = [
-        mcp_server for mcp_server in mcp_servers if (mcp_server.protocol == "mcp-sse" or mcp_server.protocol == "mcp-streamable") and (not mcp_name_pattern or re.search(mcp_name_pattern, mcp_server.name))
+        mcp_server for mcp_server in mcp_servers if (mcp_server.protocol in settings.get("__protocol__", ["mcp-sse", "mcp-streamable"])) and (not mcp_name_pattern or re.search(mcp_name_pattern, mcp_server.name))
     ]
     
     if is_debug(settings):
