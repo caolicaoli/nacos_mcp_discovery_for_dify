@@ -1,5 +1,6 @@
 import json
 import uuid
+import time
 import asyncio
 from typing import Mapping
 from werkzeug import Request, Response
@@ -18,12 +19,15 @@ logger.addHandler(plugin_logger_handler)
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-def run_async_in_thread(coro):
+def run_async_in_thread(coro_func, *args, **kwargs):
     def thread_target():
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        return loop.run_until_complete(coro)
-
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        try:
+            return new_loop.run_until_complete(coro_func(*args, **kwargs))
+        finally:
+            new_loop.close()
+                
     future = executor.submit(thread_target)
     return future.result()
 
@@ -47,7 +51,8 @@ class McpPostEndpoint(Endpoint):
         response = {"jsonrpc": "2.0", "id": r.json.get("id"), "result": {}}
         
         if method == "tools/list" or method == "tools/call":
-            response = run_async_in_thread(_invoke0(r, values, settings))
+            settings["__protocol__"] = ["mcp-sse", "mcp-streamable"]
+            response = run_async_in_thread(_invoke0, r, values, settings)
         elif method == "initialize":
             response = {
                 "jsonrpc": "2.0",
@@ -66,4 +71,3 @@ class McpPostEndpoint(Endpoint):
             logger.info(f"response is {response_str}")
             
         return Response(json.dumps(response, ensure_ascii=False, indent=2), status=200, content_type="application/json", headers=headers)
-
